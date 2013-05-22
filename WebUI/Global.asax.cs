@@ -18,11 +18,21 @@ namespace WebUI
         {
             AreaRegistration.RegisterAllAreas();
 
-            WebApiConfig.Register(GlobalConfiguration.Configuration);
+            //WebApiConfig.Register(GlobalConfiguration.Configuration); // This is not used. We use ServiceStack
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AuthConfig.RegisterAuth();
+        }
+
+        protected void Application_BeginRequest(object src, EventArgs e)
+        {
+            if (Request.IsLocal)
+                ServiceStack.MiniProfiler.Profiler.Start();
+        }
+
+        protected void Application_EndRequest(object src, EventArgs e)
+        {
+            ServiceStack.MiniProfiler.Profiler.Stop();
         }
     }
 }
